@@ -43,6 +43,8 @@ python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/
 
 ### 2.2 数据准备
 
+关于数据，使用了 `https://gitcode.com/Premium-Resources/1b1ac?utm_source=article_gitcode_universal&index=top&type=card&&uuid_tt_dd=10_18866012940-1793255829123-602025&from_id=147712697&from_link=3bacab1b5fd8a60ca9ef3d1a397db366`
+
 训练脚本读取以下文件：
 
 ```text
