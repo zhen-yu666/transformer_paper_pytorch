@@ -95,6 +95,14 @@ conda run -n touch312 python -m pytest tests/ -k "not cuda and not device_conver
 
 VS Code 中也可以通过“终端 → 运行任务”选择 `pytest: 单元测试`、`pytest: 集成测试` 或 `pytest (current file)`。推理脚本由用户在本机使用 CUDA 手动验证。
 
+### 2.5 说明文档
+
+| 文档 | 内容 |
+| --- | --- |
+| [测试说明](docs/testing.md) | 分为集成测试和单元测试，按文件列出各测试函数及辅助函数的作用。 |
+| [训练说明](docs/training.md) | 介绍训练与数据处理函数的作用、参数，以及训练配置项。 |
+| [推理说明](docs/inference.md) | 介绍模型加载、翻译函数的作用和参数，以及推理命令行选项。 |
+
 ## 3. 示例和代码片段 (Examples and Code Snippets)
 
 ### 3.1 调用 Transformer
@@ -220,6 +228,10 @@ transformer_pytorch312/
 │   └── README.md                 # 训练与推理详细说明
 ├── data/wmt/                     # 英中句子对数据
 ├── tests/                        # pytest 单元测试与集成测试
+├── docs/                         # 测试、训练与推理说明
+│   ├── testing.md                # 测试函数说明
+│   ├── training.md               # 训练函数与参数说明
+│   └── inference.md              # 推理函数与参数说明
 ├── agents/                       # 按任务读取的开发规范
 ├── .vscode/tasks.json            # VS Code 运行与测试任务
 ├── AGENTS.md                     # 项目开发约定及规范索引
