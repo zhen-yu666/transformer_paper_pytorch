@@ -11,37 +11,15 @@
 - 各模块的 pytest 单元测试和完整模型、训练流程的集成测试。
 - 英译中数据处理、训练、验证与权重保存脚本。
 - 从 checkpoint 恢复模型和词表、使用贪心解码生成中文的推理脚本。
-- 面向 12 GB 显存的小规模默认配置，以跑通训练流程为目标。
 
 ## 2. 安装和使用说明 (Installation and Usage Instructions)
 
-以下命令从项目根目录执行。项目使用 Conda 环境 `touch312`，运行依赖为 PyTorch，测试依赖为 pytest。
+以下命令从项目根目录执行。本机开发环境使用 Conda 环境 `touch312`，运行依赖为 PyTorch，测试依赖为 pytest。
 
-### 2.1 创建环境与安装依赖
+云服务器上的运行步骤统一见 [云服务器部署说明](docs/cloud-server.md)：从全新 GPU 服务器开始，依次完成 git 克隆、Docker 安装、数据挂载、训练、推理与评估；云服务器无需安装 Conda，镜像默认命令不会启动训练。
+以下在本地进行测试连通性，如何训练、推理看以上部分。
 
-已有 `touch312` 环境时，只需激活环境并确认依赖已安装。
-
-```bash
-conda create -n touch312 python=3.12 -y
-conda activate touch312
-```
-
-下面给出 PyTorch 2.9.1、CUDA 12.8 的安装示例。其他平台或 CUDA 构建可参考 [PyTorch 官方安装说明](https://pytorch.org/get-started/previous-versions/#v291)。
-
-```bash
-python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cu128
-python -m pip install pytest
-```
-
-仅使用 CPU 时，将上述 PyTorch 安装命令替换为：
-
-```bash
-python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
-```
-
-项目采用 `src` 布局，目前没有打包安装配置。运行入口已处理源码导入路径；在其他脚本或交互环境中使用 `transformer` 时，需要将项目的 `src/` 加入 Python 搜索路径。
-
-### 2.2 数据准备
+### 2.1 数据准备
 
 关于数据，使用了 `https://gitcode.com/Premium-Resources/1b1ac?utm_source=article_gitcode_universal&index=top&type=card&&uuid_tt_dd=10_18866012940-1793255829123-602025&from_id=147712697&from_link=3bacab1b5fd8a60ca9ef3d1a397db366`
 
@@ -52,6 +30,8 @@ data/wmt/train.json   # 训练集
 data/wmt/dev.json     # 验证集
 data/wmt/test.json    # 测试集，不参与训练和最佳权重选择
 ```
+
+若数据解压后位于 `data/1b1ac/wmt/`，可移动到 `data/wmt/`，或在训练和评估时分别用 `--data-dir`、`--data-file` 指定实际路径。
 
 每个 JSON 文件都是英文、中文句子对列表，格式示例：
 
@@ -64,7 +44,7 @@ data/wmt/test.json    # 测试集，不参与训练和最佳权重选择
 
 英文按词和标点切分并转小写，中文按非空白字符切分，无需额外下载分词模型。词表仅从选中的训练数据构建；特殊 token 为 `PAD=0`、`UNK=1`、`BOS=2`、`EOS=3`。空句对会跳过并提示。
 
-### 2.3 快速运行
+### 2.2 快速运行
 
 运行随机 token 的前向计算示例：
 
@@ -80,30 +60,19 @@ torch.Size([32, 12, 4000])
 
 最后一维对应 `config.py` 中的目标词表大小，修改配置后会随之变化。
 
-### 2.4 运行测试
-
-```bash
-# 单元测试
-conda run -n touch312 python -m pytest tests/ --ignore=tests/test_model.py -v -rs
-
-# 集成测试：完整模型与 CPU 小规模训练、保存和重新加载
-conda run -n touch312 python -m pytest tests/test_model.py -v -rs
-
-# 全部非 CUDA 测试
-conda run -n touch312 python -m pytest tests/ -k "not cuda and not device_conversion" -q
-```
-
-VS Code 中也可以通过“终端 → 运行任务”选择 `pytest: 单元测试`、`pytest: 集成测试` 或 `pytest (current file)`。推理脚本由用户在本机使用 CUDA 手动验证。
-
-### 2.5 说明文档
+### 2.3 说明文档
 
 | 文档 | 内容 |
 | --- | --- |
+| [开发环境说明](docs/development.md) | Conda 环境创建、依赖安装与验证。 |
+| [云服务器部署说明](docs/cloud-server.md) | 从全新 GPU 服务器开始：安装 Docker、挂载数据、训练、推理与评估。 |
 | [测试说明](docs/testing.md) | 分为集成测试和单元测试，按文件列出各测试函数及辅助函数的作用。 |
 | [训练说明](docs/training.md) | 介绍训练与数据处理函数的作用、参数，以及训练配置项。 |
 | [推理说明](docs/inference.md) | 介绍模型加载、翻译函数的作用和参数，以及推理命令行选项。 |
 
 ## 3. 示例和代码片段 (Examples and Code Snippets)
+
+以下示例在本机 Conda 环境中运行，用于开发验证；云服务器上的完整运行步骤（Docker 安装、数据挂载、训练、推理与评估）见 [云服务器部署说明](docs/cloud-server.md)。
 
 ### 3.1 调用 Transformer
 
@@ -172,6 +141,8 @@ conda run --no-capture-output -n touch312 python examples/transformer/train.py \
   --max-val-samples 8 --max-steps-per-epoch 2
 ```
 
+云服务器上的 GPU 训练命令、后台运行方式与权重保存位置见 [云服务器部署说明](docs/cloud-server.md)。
+
 训练采用 teacher forcing，Decoder 输入与监督标签错开一位；损失忽略 PAD。每轮记录训练 loss、验证 loss 和验证 token accuracy。默认配置用于学习与流程验证，不代表论文复现结果或翻译质量评测。
 
 每次训练的产物保存在训练脚本旁的独立目录：
@@ -203,7 +174,19 @@ conda run --no-capture-output -n touch312 python examples/transformer/inference.
 - 使用 `--max-new-tokens` 调整生成长度上限。
 - 默认使用 CUDA；需要 CPU 时显式指定 `--device cpu`。
 
-更多数据处理、权重加载和运行选项见 [训练与推理说明](examples/transformer/README.md)。
+更多数据处理与权重加载细节见 [训练说明](docs/training.md)，推理接口见 [推理说明](docs/inference.md)；云服务器上的推理执行步骤见 [云服务器部署说明](docs/cloud-server.md)。
+
+### 3.4 测试集评估
+
+训练完成后，可在 `data/wmt/test.json` 上评估贪心翻译与参考译文的相似度：
+
+```bash
+conda run --no-capture-output -n touch312 python examples/transformer/evaluate.py \
+  --checkpoint examples/transformer/checkpoints/run_xxxxxxxx/best.pt \
+  --device cuda --limit 200
+```
+
+`--limit 200` 只评估前 200 条，省略或设为 `0` 表示全部；`--show` 逐句打印参考与生成结果；`--output <路径>` 保存汇总与逐句 JSON。指标为字符相似度、token precision/recall/F1 和完全匹配率，属于轻量相似度指标，不是 BLEU。测试集不参与训练和 `best.pt` 选择；云端评估执行步骤见 [云服务器部署说明](docs/cloud-server.md)。
 
 ## 4. 项目结构和文件组织 (Project Structure and File Organization)
 
@@ -224,14 +207,21 @@ transformer_pytorch312/
 │   ├── training_data.py          # 分词、词表与数据加载
 │   ├── train.py                  # 训练与验证入口
 │   ├── inference.py              # 推理入口
-│   ├── checkpoints/              # 训练生成的权重与记录
-│   └── README.md                 # 训练与推理详细说明
+│   ├── evaluate.py               # 测试集相似度评估
+│   └── checkpoints/              # 训练生成的权重与记录
 ├── data/wmt/                     # 英中句子对数据
 ├── tests/                        # pytest 单元测试与集成测试
-├── docs/                         # 测试、训练与推理说明
+├── docs/                         # 开发、云服务器、测试、训练与推理说明
+│   ├── development.md            # Conda 环境与依赖安装
+│   ├── cloud-server.md           # 云服务器部署、训练、推理与评估
 │   ├── testing.md                # 测试函数说明
 │   ├── training.md               # 训练函数与参数说明
 │   └── inference.md              # 推理函数与参数说明
+├── Dockerfile                    # CPU / CUDA 镜像定义
+├── compose.yaml                  # CPU 测试与 GPU 训练服务
+├── requirements.txt              # 运行依赖（torch）
+├── requirements-dev.txt          # 开发与测试依赖（pytest）
+├── .dockerignore                 # 镜像构建排除项
 ├── agents/                       # 按任务读取的开发规范
 ├── .vscode/tasks.json            # VS Code 运行与测试任务
 ├── AGENTS.md                     # 项目开发约定及规范索引

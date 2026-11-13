@@ -89,4 +89,16 @@
 | `test_epoch_rejects_batches_with_no_supervised_tokens` | 验证没有有效监督 token 时抛出异常。 |
 | `test_cpu_device_and_invalid_training_options` | 验证 CPU 设备解析及非法训练轮数检查。 |
 
+### `tests/test_evaluation.py`
+
+| 函数 | 作用 |
+| --- | --- |
+| `FixedTranslator` | 辅助类：按顺序返回预设译文，替代真实模型。 |
+| `test_char_similarity_for_identical_partial_and_disjoint_text` | 验证字符相似度在完全一致、部分重合和完全不同文本上的取值。 |
+| `test_token_scores_match_hand_calculation` | 验证 token precision / recall / F1 与手算一致。 |
+| `test_token_scores_handle_empty_strings` | 验证参考或生成为空时的指标取值。 |
+| `test_evaluate_records_each_sentence_in_order` | 验证逐句记录顺序、完全匹配与相似度计算。 |
+| `test_summarize_averages_metrics_and_exact_match_rate` | 验证汇总指标按样本数平均。 |
+| `test_summarize_rejects_empty_records` | 验证空记录抛出异常。 |
+
 `tests/conftest.py` 没有定义函数；它配置项目根目录与 `src/` 的导入路径，供测试使用。

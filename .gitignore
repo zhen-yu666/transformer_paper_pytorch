@@ -1,5 +1,6 @@
 # 本地配置与代理文件
 /.codex/
+/.claude/
 /.vscode/
 /.agents/
 /.aws/
@@ -15,6 +16,11 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.venv/
+
+# 导出的 Docker 镜像
+/*.tar
+/*.tar.gz
 
 # 训练生成的权重与运行记录
 /examples/transformer/checkpoints/

@@ -1,0 +1,37 @@
+services:
+  tests:
+    image: transformer-pytorch:cpu
+    build:
+      context: .
+      args:
+        TORCH_INDEX_URL: https://download.pytorch.org/whl/cpu
+    environment:
+      CUDA_VISIBLE_DEVICES: ""
+
+  gpu:
+    profiles: [gpu]
+    image: transformer-pytorch:cu128
+    build:
+      context: .
+      args:
+        TORCH_INDEX_URL: https://download.pytorch.org/whl/cu128
+    shm_size: 2gb
+    volumes:
+      - type: bind
+        source: ./data
+        target: /workspace/data
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./examples/transformer/checkpoints
+        target: /workspace/examples/transformer/checkpoints
+        bind:
+          create_host_path: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
