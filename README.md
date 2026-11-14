@@ -27,7 +27,7 @@ GPU：vGPU-32GB(32GB) * 1
 超参数：`example/transformer/config.py`
 ```
 
-训练，推理步骤详细见 [云服务器部署说明](docs/cloud-server.md)：从全新 GPU 服务器开始，依次完成 git 克隆、Docker 安装、数据挂载、训练、推理与评估。
+训练、推理与评估步骤见 [云服务器部署说明](docs/cloud-server.md)，包含 Docker 部署（裸机 GPU 服务器）和直接部署（AutoDL 等容器实例）两种方式。
 
 接下来解释在本地测试代码的连通性。
 
@@ -73,14 +73,14 @@ torch.Size([32, 12, 4000])
 | 文档 | 内容 |
 | --- | --- |
 | [开发环境说明](docs/development.md) | Conda 环境创建、依赖安装与验证。 |
-| [云服务器部署说明](docs/cloud-server.md) | 从全新 GPU 服务器开始：安装 Docker、挂载数据、训练、推理与评估。 |
+| [云服务器部署说明](docs/cloud-server.md) | Docker 部署与 AutoDL 等容器实例的直接部署两种方式，含数据、训练、推理与评估。 |
 | [测试说明](docs/testing.md) | 分为集成测试和单元测试，按文件列出各测试函数及辅助函数的作用。 |
 | [训练说明](docs/training.md) | 介绍训练与数据处理函数的作用、参数，以及训练配置项。 |
 | [推理说明](docs/inference.md) | 介绍模型加载、翻译函数的作用和参数，以及推理命令行选项。 |
 
 ## 5. 示例和代码片段
 
-以下示例在开发环境中运行，用于开发验证；云服务器上的完整运行步骤（Docker 安装、数据挂载、训练、推理与评估）见 [云服务器部署说明](docs/cloud-server.md)。
+以下示例在开发环境中运行，用于开发验证；云服务器上的完整运行步骤（Docker 部署或直接部署、数据挂载、训练、推理与评估）见 [云服务器部署说明](docs/cloud-server.md)。
 
 ### 5.1 调用 Transformer
 
