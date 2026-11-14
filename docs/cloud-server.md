@@ -1,6 +1,6 @@
-# 云服务器部署与训练说明
+# 项目部署，训练与推理
 
-本文说明如何把项目部署到云端 GPU 机器，完成训练、推理和测试集评估。根据服务器类型提供两种方式：
+本文说明如何把项目部署到运行环境，完成训练、推理和测试集评估。根据服务器类型提供两种方式：
 
 - **方式一：Docker 部署** —— 适合可以安装 Docker 的裸机或虚拟机（有 root / sudo 权限）。
 - **方式二：直接部署** —— 适合 AutoDL 等本身运行在容器内的实例。这类环境没有 Docker daemon，也不支持 Docker-in-Docker。
@@ -62,7 +62,7 @@ cd transformer_paper_pytorch
 
 ### 1.3 上传并确认训练数据
 
-`compose.yaml` 的 `gpu` 服务把宿主机的 `./data` 只读挂载到容器的 `/workspace/data`。训练脚本默认读取 `data/wmt/train.json` 和 `data/wmt/dev.json`，评估脚本默认读取 `data/wmt/test.json`。数据只存在于宿主机，不会打进镜像。
+`compose.yaml` 的 `gpu` 服务把宿主机的 `./data` 只读挂载到容器的 `/workspace/data`。训练脚本默认读取 `data/wmt/train.json` ，评估脚本默认读取 `data/wmt/dev.json`。数据只存在于宿主机，不会打进镜像。
 
 推荐把三个 JSON 放到 `data/wmt/`，与 `config.py` 的默认值保持一致。先在服务器上创建目录：
 
